@@ -1,0 +1,32 @@
+# demo-v1.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-v1
+  namespace: canary-tp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: demo
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: demo
+        version: v1
+    spec:
+      containers:
+      - name: demo
+        image: hashicorp/http-echo:0.2.3
+        args:
+          - "-text=Hello from v1"
+          - "-listen=:80" 
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 2
+          periodSeconds: 5

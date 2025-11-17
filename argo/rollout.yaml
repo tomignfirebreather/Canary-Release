@@ -1,0 +1,52 @@
+# rollout.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: demo-rollout
+  namespace: canary-tp
+spec:
+  replicas: 1
+  strategy:
+    canary:
+      stableService: demo-stable
+      canaryService: demo-canary
+      trafficRouting:
+        nginx:
+          stableIngress: demo-ingress
+        smi: {}
+      steps:
+        - setWeight: 5
+        - pause: {}
+        - setWeight: 10
+        - pause: {duration: 30s}
+        - setWeight: 15
+        - pause: {duration: 30s}
+        - setWeight: 30
+        - pause: {duration: 30s}
+        - setWeight: 50
+        - pause: {duration: 30s}
+        - setWeight: 100
+        - pause: {}
+  selector:
+    matchLabels:
+      app: demo
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+      labels:
+        app: demo
+    spec:
+      containers:
+      - name: demo
+        image: argoproj/rollouts-demo:green
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        resources:
+          requests:
+            memory: 32Mi
+            cpu: 5m
+
+

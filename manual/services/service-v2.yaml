@@ -1,15 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: svc-demo-v2
-  labels:
-    app: demo
-    version: v2
+  name: service-v2
 spec:
-  type: ClusterIP
   selector:
-    app: demo
+    app: myapp
     version: v2
   ports:
-    - port: 80
-      targetPort: 8080
+  - protocol: TCP
+    port: 80
+    targetPort: 80

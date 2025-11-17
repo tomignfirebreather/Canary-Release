@@ -1,24 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: demo-v1
+  name: app-v1
   labels:
-    app: demo
+    app: myapp
     version: v1
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: demo
+      app: myapp
       version: v1
   template:
     metadata:
       labels:
-        app: demo
+        app: myapp
         version: v1
     spec:
       containers:
-      - name: demo
-        image: tomasignacio/demo:v1
-        ports:
-        - containerPort: 8080
+        - name: myapp
+          image: nginx:alpine
+          command: ["/bin/sh"]
+          args: ["-c", "echo 'V1' > /usr/share/nginx/html/index.html && nginx -g 'daemon off;'"]
+          ports:
+            - containerPort: 80

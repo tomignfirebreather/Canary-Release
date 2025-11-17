@@ -1,26 +1,40 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress-stable
+  name: myapp-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: "nginx"
 spec:
-  ingressClassName: nginx
   rules:
-  - host: demo.local
+  - host: ""
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: svc-demo-v1
+            name: service-v1
             port:
               number: 80
-      - path: /v1
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: myapp-canary
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/canary: "true"
+    nginx.ingress.kubernetes.io/canary-weight: "20"
+spec:
+  rules:
+  - host: ""
+    http:
+      paths:
+      - path: /
         pathType: Prefix
         backend:
           service:
-            name: svc-demo-v1
+            name: service-v2
             port:
               number: 80
+

@@ -1,5 +1,0 @@
-resources:
-  - deployments/deployment-v1.yaml
-  - deployments/deployment-v2.yaml
-  - services/service-v1.yaml
-  - services/service-v2.yaml

@@ -1,0 +1,47 @@
+EN WINDOWS:
+
+-Instalar Minikube y el kubectl
+-minikube start --driver=Docker
+-minikube service ingress-nginx-controller -n ingress-nginx (esto para iniciar un túnel correctamente)
+
+
+-SCRIPT: 
+# Script PowerShell para probar tráfico real hacia Ingress + Canary
+$baseUrl = "http://127.0.0.1:65508"
+$totalRequests = 1000
+
+$v1Count = 0
+$v2Count = 0
+$errorCount = 0
+
+Write-Host "🚀 Enviando $totalRequests requests a $baseUrl (NGINX controlará el canary)"
+Write-Host "========================================================="
+
+for ($i = 1; $i -le $totalRequests; $i++) {
+    try {
+        $response = Invoke-WebRequest -Uri $baseUrl -UseBasicParsing -TimeoutSec 5
+        $body = $response.Content
+
+        if ($body -match "V1") {
+            $v1Count++
+        } elseif ($body -match "V2") {
+            $v2Count++
+        } else {
+            Write-Host ("⚠️ Request {0}: Respuesta desconocida -> {1}" -f $i, $body)
+            $errorCount++
+        }
+
+    } catch {
+        Write-Host ("⚠️ Request {0}: Error -> {1}" -f $i, $_.Exception.Message)
+        $errorCount++
+    }
+}
+
+Write-Host "========================================================="
+Write-Host "Resultados finales:"
+Write-Host "V1 atendió: $v1Count requests"
+Write-Host "V2 atendió: $v2Count requests"
+Write-Host "Errores:   $errorCount requests"
+
+
+La URL del script es la primera que te da el apartado de ingress_nginx_controller luego de aplicar el comando anterior que inicia el tunel

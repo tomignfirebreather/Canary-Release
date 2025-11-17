@@ -1,0 +1,29 @@
+# service-stable.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-stable
+  namespace: canary-tp
+spec:
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app: demo
+---
+# service-canary.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-canary
+  namespace: canary-tp
+spec:
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app: demo
